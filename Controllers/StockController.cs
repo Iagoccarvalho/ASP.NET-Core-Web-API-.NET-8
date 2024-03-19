@@ -1,5 +1,7 @@
 ﻿using Api_NET8.Data;
+using Api_NET8.DTOs.Stock;
 using Api_NET8.Mappers;
+using Api_NET8.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,6 +35,16 @@ namespace Api_NET8.Controllers
                 return NotFound();
 
             return Ok(stock.ToStockDTO());
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateStockRequestDTO stockDTO)
+        {
+            var stockModel = stockDTO.ToStockFromCreatedDTO();
+            _context.Stock.Add(stockModel);
+            _context.SaveChanges();
+
+            return CreatedAtAction(nameof(GetById), new {id = stockModel.Id}, stockModel.ToStockDTO());
         }
     }
 }
