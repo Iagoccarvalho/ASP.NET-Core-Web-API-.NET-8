@@ -1,5 +1,4 @@
-﻿using Api_NET8.Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Api_NET8.DTOs.Comment;
 
 namespace Api_NET8.DTOs.Stock
 {
@@ -12,5 +11,6 @@ namespace Api_NET8.DTOs.Stock
         public decimal LastDiv { get; set; }
         public string Industry { get; set; } = string.Empty;
         public long MarketCap { get; set; }
+        public List<CommentDTO>? Comments { get; set; }
     }
 }
