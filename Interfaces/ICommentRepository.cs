@@ -7,7 +7,7 @@ namespace Api_NET8.Interfaces
     {
         Task<List<Comment>> GetAllAsync();
         Task<Comment?> GetByIdAsync(int id); //FirstOrDefault PODE SER NULO
-        //Task<Comment> CreateAsync(Comment commentModel);
+        Task<Comment> CreateAsync(Comment commentModel);
         //Task<Comment?> UpdateAsync(int id, UpdateCommentRequestDTO commentDTO);
         //Task<Comment?> DeleteAsync(int id);
     }

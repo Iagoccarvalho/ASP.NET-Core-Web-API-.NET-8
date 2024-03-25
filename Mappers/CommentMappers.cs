@@ -16,5 +16,15 @@ namespace Api_NET8.Mappers
                 StockId = comment.StockId
             };
         }
+
+        public static Comment ToCommentFromCreateDTO(this CreateCommentRequestDTO commentDTO, int stockId)
+        {
+            return new Comment
+            {
+                Title = commentDTO.Title,
+                Content = commentDTO.Content,
+                StockId = stockId
+            };
+        }
     }
 }
