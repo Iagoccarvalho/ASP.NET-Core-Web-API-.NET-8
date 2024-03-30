@@ -22,6 +22,21 @@ namespace Api_NET8.Repository
             return commentModel;
         }
 
+        public async Task<Comment?> DeleteAsync(int id)
+        {
+            var comment = await _context.Comment.FirstOrDefaultAsync(c => c.Id == id);
+
+            if(comment == null)
+            {
+                return null;
+            }
+
+            _context.Comment.Remove(comment);
+            await _context.SaveChangesAsync();
+
+            return comment;
+        }
+
         public async Task<List<Comment>> GetAllAsync()
         {
             return await _context.Comment.ToListAsync();
@@ -34,6 +49,21 @@ namespace Api_NET8.Repository
             return comment == null 
                 ? null 
                 : comment;
+        }
+
+        public async Task<Comment?> UpdateAsync(int id, Comment commentModel)
+        {
+            var existingComment = await _context.Comment.FindAsync(id);
+
+            if (existingComment == null)
+                return null;
+
+            existingComment.Title = commentModel.Title;
+            existingComment.Content = commentModel.Content;
+
+            await _context.SaveChangesAsync();
+
+            return existingComment;
         }
     }
 }

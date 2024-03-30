@@ -1,5 +1,6 @@
 ﻿using Api_NET8.Data;
 using Api_NET8.DTOs.Stock;
+using Api_NET8.Helper;
 using Api_NET8.Interfaces;
 using Api_NET8.Models;
 using Microsoft.EntityFrameworkCore;
@@ -36,9 +37,31 @@ namespace Api_NET8.Repository
 
         }
 
-        public async Task<List<Stock>> GetAllAsync()
+        public async Task<List<Stock>> GetAllAsync(QueryObject query)
         {
-            return await _context.Stock.Include(s => s.Comments).ToListAsync();
+            var stocks =  _context.Stock.Include(s => s.Comments).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.CompanyName))
+            {
+                stocks = stocks.Where(s => s.CompanyName.Contains(query.CompanyName));
+            }
+            
+            if (!string.IsNullOrWhiteSpace(query.Symbol))
+            {
+                stocks = stocks.Where(s => s.Symbol.Contains(query.Symbol));
+            }
+
+            if(!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase))
+                {
+                    stocks = query.IsDecsending 
+                        ? stocks.OrderByDescending(s => s.Symbol)
+                        : stocks.OrderBy(s => s.Symbol);
+                }
+            }
+
+            return await stocks.ToListAsync();
         }
 
         public async Task<Stock?> GetByIdAsync(int id)

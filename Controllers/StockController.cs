@@ -1,11 +1,8 @@
-﻿using Api_NET8.Data;
-using Api_NET8.DTOs.Stock;
+﻿using Api_NET8.DTOs.Stock;
+using Api_NET8.Helper;
 using Api_NET8.Interfaces;
 using Api_NET8.Mappers;
-using Api_NET8.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api_NET8.Controllers
 {
@@ -20,18 +17,24 @@ namespace Api_NET8.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
-            var stocks = await _repository.GetAllAsync();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var stocks = await _repository.GetAllAsync(query);
 
             var stockDTO = stocks.Select(s => s.ToStockDTO());
 
             return Ok(stocks);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var stock = await _repository.GetByIdAsync(id);
 
             if (stock == null)
@@ -43,6 +46,9 @@ namespace Api_NET8.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStockRequestDTO stockDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var stockModel = stockDTO.ToStockFromCreatedDTO();
             await _repository.CreateAsync(stockModel);
 
@@ -50,9 +56,12 @@ namespace Api_NET8.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDTO stockDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var stockModel = await _repository.UpdateAsync(id, stockDTO);
 
             if (stockModel == null)
@@ -62,9 +71,12 @@ namespace Api_NET8.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var stockModel = await _repository.DeleteAsync(id);
 
             if (stockModel == null) 

@@ -1,4 +1,6 @@
-﻿namespace Api_NET8.DTOs.Comment
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Api_NET8.DTOs.Comment
 {
     public class CommentDTO
     {
